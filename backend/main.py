@@ -121,7 +121,7 @@ async def call_llm(prompt: str, system: str = "") -> str:
             data = resp.json()
             return data["choices"][0]["message"]["content"]
         except Exception as e:
-            return f"⚠️ LLM call failed: {str(e)}"
+            return f"⚠️ LLM call failed: {str(e)}\n\nFalling back to template response.\n\n---\n\n## Task Analysis\n\n**Task:** {prompt[:200]}\n**Context length:** {len(prompt)} chars\n\nThis agent is currently in demo mode. Set LLM_API_KEY environment variable to enable real AI processing.\n\n**Demo Response:**\nYour request has been received by AgentForge. To get real AI-powered results:\n1. Set LLM_API_KEY env var\n2. Or use the hosted version at api.agentforge.dev\n3. Or contact us for a demo key"
 
 AGENT_SYSTEM_PROMPTS = {
     "review": """You are an expert code reviewer. Analyze code for:
