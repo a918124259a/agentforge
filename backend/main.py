@@ -7,6 +7,8 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 from typing import Optional
 import uvicorn
+import httpx
+
 
 app = FastAPI(title="AgentForge API", version="0.1.0")
 
@@ -50,30 +52,25 @@ def root():
     return {"service": "AgentForge", "version": "0.1.0", "status": "operational"}
 
 @app.post("/v1/agent/execute")
-def execute_agent(req: AgentRequest, api_key: str = Depends(verify_api_key)):
+async def execute_agent(req: AgentRequest, api_key: str = Depends(verify_api_key)):
     """Execute an AI agent task."""
     start = time.time()
     
-    # Simple AI execution using available model
-    # For MVP: we'll integrate with the Hermes API or direct model calls
     task_id = f"task_{uuid.uuid4().hex[:12]}"
-    
-    # Simulate processing (will be replaced with real AI model call)
-    result = process_task(req.task, req.context)
+    result = await process_task(req.task, req.context)
     
     duration = int((time.time() - start) * 1000)
     tokens = estimate_tokens(req.task) + estimate_tokens(result)
     
-    # Log usage
     API_KEYS[api_key]["usage"] += 1
     
-    return AgentResponse(
-        id=task_id,
-        result=result,
-        format=req.format,
-        tokens_used=tokens,
-        duration_ms=duration
-    )
+    return {
+        "id": task_id,
+        "result": result,
+        "format": req.format,
+        "tokens_used": tokens,
+        "duration_ms": duration
+    }
 
 @app.post("/v1/keys/create")
 def create_key(plan: str = "free"):
@@ -97,58 +94,74 @@ def get_usage(api_key: str = Depends(verify_api_key)):
         "created_at": info["created_at"]
     }
 
-# --- Internal helpers ---
+# --- LLM Integration ---
 
-def process_task(task: str, context: str = "") -> str:
-    """Process a task using AI. MVP: simple template-based responses."""
+LLM_API_KEY = os.getenv("LLM_API_KEY", "")
+LLM_BASE_URL = os.getenv("LLM_BASE_URL", "https://inference-api.nousresearch.com/v1")
+LLM_MODEL = os.getenv("LLM_MODEL", "deepseek/deepseek-v4-flash")
+
+async def call_llm(prompt: str, system: str = "") -> str:
+    """Call the LLM API to process a prompt."""
+    if not LLM_API_KEY:
+        return "[Mock] LLM not configured. Set LLM_API_KEY env var."
+    
+    messages = []
+    if system:
+        messages.append({"role": "system", "content": system})
+    messages.append({"role": "user", "content": prompt})
+    
+    async with httpx.AsyncClient(timeout=60) as client:
+        try:
+            resp = await client.post(
+                f"{LLM_BASE_URL}/chat/completions",
+                headers={"Authorization": f"Bearer {LLM_API_KEY}", "Content-Type": "application/json"},
+                json={"model": LLM_MODEL, "messages": messages, "max_tokens": 4096}
+            )
+            resp.raise_for_status()
+            data = resp.json()
+            return data["choices"][0]["message"]["content"]
+        except Exception as e:
+            return f"⚠️ LLM call failed: {str(e)}"
+
+AGENT_SYSTEM_PROMPTS = {
+    "review": """You are an expert code reviewer. Analyze code for:
+1. Bugs and logic errors
+2. Security vulnerabilities
+3. Performance issues
+4. Best practice violations
+5. Code quality and readability
+
+Return a structured markdown report with severity levels (🔴 Critical, 🟡 Warning, 💡 Suggestion).""",
+
+    "test": """You are a test generation expert. Generate comprehensive tests.
+For each test include: test name, description, and the actual test code.
+Use the testing framework appropriate for the language shown.""",
+
+    "doc": """You are a technical documentation expert. Generate clear, concise documentation.
+Include: overview, installation, usage examples, API reference, and configuration options.""",
+
+    "general": """You are a helpful AI agent. Complete the user's task accurately and thoroughly.
+Provide clear, actionable responses with code examples where relevant."""
+}
+
+async def process_task(task: str, context: str = "") -> str:
+    """Route task to appropriate agent and process with LLM."""
     task_lower = task.lower()
     
-    if "code review" in task_lower or "review" in task_lower:
-        return f"""## Code Review Results
-
-**Issues Found:**
-1. ⚠️ Potential null pointer at line 42 — variable may be uninitialized
-2. 💡 Consider using async/await instead of callbacks (line 78)
-3. ✅ Error handling is well implemented (lines 100-120)
-
-**Summary:** 1 critical, 2 warnings, 3 suggestions"""
+    if any(w in task_lower for w in ["review", "code review", "audit"]):
+        system = AGENT_SYSTEM_PROMPTS["review"]
+        prompt = f"## Code to Review\n\n{context or task}\n\nReview the above code and provide detailed feedback."
+    elif any(w in task_lower for w in ["test", "unit test", "integration test"]):
+        system = AGENT_SYSTEM_PROMPTS["test"]
+        prompt = f"## Code to Test\n\n{context or task}\n\nGenerate comprehensive tests for the above code."
+    elif any(w in task_lower for w in ["doc", "document", "readme"]):
+        system = AGENT_SYSTEM_PROMPTS["doc"]
+        prompt = f"## Code to Document\n\n{context or task}\n\nGenerate documentation for the above code."
+    else:
+        system = AGENT_SYSTEM_PROMPTS["general"]
+        prompt = f"## Task\n\n{task}\n\n## Context\n\n{context}\n\nComplete this task."
     
-    if "test" in task_lower or "generate test" in task_lower:
-        return """```typescript
-import { describe, it, expect } from 'vitest';
-
-describe('UserService', () => {
-  it('should create a new user', async () => {
-    const user = await UserService.create({ name: 'Test' });
-    expect(user.id).toBeDefined();
-    expect(user.name).toBe('Test');
-  });
-
-  it('should reject duplicate emails', async () => {
-    await UserService.create({ email: 'test@test.com' });
-    await expect(
-      UserService.create({ email: 'test@test.com' })
-    ).rejects.toThrow('Email already exists');
-  });
-});
-```"""
-    
-    if "summarize" in task_lower or "summary" in task_lower:
-        return f"""## Summary
-
-Based on the provided context, here are the key points:
-1. Main topic: {task[:50]}...
-2. Actionable insights identified
-3. Recommendations provided below
-
-*This is an AI-generated summary. Please verify critical information.*"""
-    
-    # Default: general response
-    return f"""Task processed: {task[:100]}
-
-**Result:**
-The agent has analyzed your request and prepared the following output.
-For more specific tasks, please use one of: "review", "generate test", "summarize" keywords in your task description."""
+    return await call_llm(prompt, system)
 
 def estimate_tokens(text: str) -> int:
     """Rough token estimation."""
