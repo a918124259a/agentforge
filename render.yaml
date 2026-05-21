@@ -1,0 +1,26 @@
+services:
+  - type: web
+    name: agentforge-api
+    env: python
+    buildCommand: pip install -r backend/requirements.txt
+    startCommand: cd backend && uvicorn main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: LLM_API_KEY
+        value: ""
+      - key: LLM_BASE_URL
+        value: "https://api.deepseek.com"
+      - key: LLM_MODEL
+        value: "deepseek-chat"
+      - key: STRIPE_SECRET_KEY
+        value: ""
+      - key: STRIPE_PUBLISHABLE_KEY
+        value: ""
+
+  - type: web
+    name: agentforge-landing
+    env: static
+    staticPublishPath: .
+    routes:
+      - type: rewrite
+        source: /*
+        destination: /index.html
