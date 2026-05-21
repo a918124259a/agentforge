@@ -103,7 +103,26 @@ LLM_MODEL = os.getenv("LLM_MODEL", "deepseek/deepseek-v4-flash")
 async def call_llm(prompt: str, system: str = "") -> str:
     """Call the LLM API to process a prompt."""
     if not LLM_API_KEY:
-        return "[Mock] LLM not configured. Set LLM_API_KEY env var."
+        return f"""## Demo Mode — AgentForge
+
+**Task:** {prompt[:200]}
+
+AgentForge is running in demo mode without an LLM provider configured.
+
+**To enable AI processing:**
+1. Deploy with `docker-compose up -d`
+2. Set `LLM_API_KEY` and `LLM_BASE_URL` environment variables
+3. Or use the hosted version at `api.agentforge.dev`
+
+**Demo API Test:**
+```bash
+curl -X POST https://api.agentforge.dev/v1/agent/execute \\
+  -H "Authorization: Bearer YOUR_KEY" \\
+  -H "Content-Type: application/json" \\
+  -d '{{"task": "your task", "format": "markdown"}}'
+```
+
+*Ready for production. Add your LLM key and go.*"""
     
     messages = []
     if system:
