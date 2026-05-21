@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgentForge — AI Agent API for Developers</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .feature-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+        code { background: #f4f4f5; padding: 2px 6px; border-radius: 4px; font-size: 0.9em; }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Nav -->
+    <nav class="bg-white shadow-sm border-b">
+        <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+            <span class="font-bold text-xl text-gray-800">⚡ AgentForge</span>
+            <div class="flex gap-4 text-sm">
+                <a href="#features" class="text-gray-600 hover:text-gray-800">Features</a>
+                <a href="#pricing" class="text-gray-600 hover:text-gray-800">Pricing</a>
+                <a href="#docs" class="text-gray-600 hover:text-gray-800">Docs</a>
+                <a href="https://github.com/your-org/agentforge" class="text-gray-600 hover:text-gray-800">GitHub</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <section class="gradient-bg text-white py-24">
+        <div class="max-w-4xl mx-auto px-4 text-center">
+            <h1 class="text-5xl font-bold mb-6">AI Agents, <span class="text-yellow-300">as an API</span></h1>
+            <p class="text-xl text-white/80 mb-8 max-w-2xl mx-auto">
+                One API to integrate AI agents into your app. Code review, test generation,
+                documentation, data analysis — all powered by intelligent agents.
+            </p>
+            <div class="flex gap-4 justify-center">
+                <a href="#pricing" class="bg-white text-purple-700 px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition">
+                    Get Started Free →
+                </a>
+                <a href="#docs" class="border border-white/30 text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/10 transition">
+                    View Docs
+                </a>
+            </div>
+            <div class="mt-12 bg-black/20 rounded-lg p-6 max-w-xl mx-auto">
+                <code class="text-sm text-green-300">
+                    curl -X POST https://api.agentforge.dev/v1/agent/execute \<br>
+                    &nbsp;&nbsp;-H "Authorization: Bearer af_your_key" \<br>
+                    &nbsp;&nbsp;-d '{"task": "review this code", "context": "..."}'
+                </code>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="py-20 max-w-6xl mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12">What Can AgentForge Do?</h2>
+        <div class="grid md:grid-cols-3 gap-8">
+            <div class="feature-card bg-white rounded-xl p-6 shadow-md transition-all cursor-default">
+                <div class="text-3xl mb-4">🔍</div>
+                <h3 class="text-xl font-semibold mb-2">Code Review</h3>
+                <p class="text-gray-600">Automated code review with security scanning, performance analysis, and best practice suggestions.</p>
+            </div>
+            <div class="feature-card bg-white rounded-xl p-6 shadow-md transition-all cursor-default">
+                <div class="text-3xl mb-4">🧪</div>
+                <h3 class="text-xl font-semibold mb-2">Test Generation</h3>
+                <p class="text-gray-600">Generate unit tests, integration tests, and E2E tests from your code automatically.</p>
+            </div>
+            <div class="feature-card bg-white rounded-xl p-6 shadow-md transition-all cursor-default">
+                <div class="text-3xl mb-4">📝</div>
+                <h3 class="text-xl font-semibold mb-2">Doc Writer</h3>
+                <p class="text-gray-600">Generate API documentation, README files, and technical docs from source code.</p>
+            </div>
+            <div class="feature-card bg-white rounded-xl p-6 shadow-md transition-all cursor-default">
+                <div class="text-3xl mb-4">📊</div>
+                <h3 class="text-xl font-semibold mb-2">Data Analysis</h3>
+                <p class="text-gray-600">Describe your data in natural language and get insights, charts, and summaries.</p>
+            </div>
+            <div class="feature-card bg-white rounded-xl p-6 shadow-md transition-all cursor-default">
+                <div class="text-3xl mb-4">🔄</div>
+                <h3 class="text-xl font-semibold mb-2">CI/CD Integration</h3>
+                <p class="text-gray-600">Plug into your GitHub Actions, GitLab CI, or any CI/CD pipeline with simple webhooks.</p>
+            </div>
+            <div class="feature-card bg-white rounded-xl p-6 shadow-md transition-all cursor-default">
+                <div class="text-3xl mb-4">🌐</div>
+                <h3 class="text-xl font-semibold mb-2">Custom Agents</h3>
+                <p class="text-gray-600">Define your own agent with custom tools, instructions, and knowledge base.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Stats -->
+    <section class="bg-white py-16 border-y">
+        <div class="max-w-4xl mx-auto px-4 grid grid-cols-3 gap-8 text-center">
+            <div>
+                <div class="text-3xl font-bold text-purple-600">0</div>
+                <div class="text-gray-500">API Requests Served</div>
+            </div>
+            <div>
+                <div class="text-3xl font-bold text-purple-600">0</div>
+                <div class="text-gray-500">Active Developers</div>
+            </div>
+            <div>
+                <div class="text-3xl font-bold text-purple-600">99.9%</div>
+                <div class="text-gray-500">Uptime</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing -->
+    <section id="pricing" class="py-20 max-w-5xl mx-auto px-4">
+        <h2 class="text-3xl font-bold text-center mb-12">Simple Pricing</h2>
+        <div class="grid md:grid-cols-4 gap-4">
+            <div class="bg-white rounded-xl p-6 shadow-md border-2 border-gray-100">
+                <h3 class="text-lg font-bold">Free</h3>
+                <div class="text-3xl font-bold my-3">$0</div>
+                <p class="text-gray-500 text-sm mb-4">Get started</p>
+                <ul class="text-sm space-y-2 mb-6">
+                    <li>✅ 10 requests/day</li>
+                    <li>✅ 1K tokens/request</li>
+                    <li>✅ Basic agents</li>
+                    <li>❌ Custom agents</li>
+                    <li>❌ CI/CD integration</li>
+                </ul>
+                <a href="#" class="block text-center py-2 rounded-lg border border-purple-600 text-purple-600 hover:bg-purple-50 transition font-medium">Get Started</a>
+            </div>
+            <div class="bg-white rounded-xl p-6 shadow-md border-2 border-purple-500 relative">
+                <span class="absolute -top-3 left-1/2 -translate-x-1/2 bg-purple-600 text-white px-3 py-1 rounded-full text-xs font-medium">Popular</span>
+                <h3 class="text-lg font-bold">Starter</h3>
+                <div class="text-3xl font-bold my-3">$19</div>
+                <p class="text-gray-500 text-sm mb-4">/month</p>
+                <ul class="text-sm space-y-2 mb-6">
+                    <li>✅ 500 requests/day</li>
+                    <li>✅ 10K tokens/request</li>
+                    <li>✅ All agents</li>
+                    <li>✅ Custom agents</li>
+                    <li>❌ CI/CD integration</li>
+                </ul>
+                <a href="#" class="block text-center py-2 rounded-lg bg-purple-600 text-white hover:bg-purple-700 transition font-medium">Subscribe →</a>
+            </div>
+            <div class="bg-white rounded-xl p-6 shadow-md border-2 border-gray-100">
+                <h3 class="text-lg font-bold">Pro</h3>
+                <div class="text-3xl font-bold my-3">$49</div>
+                <p class="text-gray-500 text-sm mb-4">/month</p>
+                <ul class="text-sm space-y-2 mb-6">
+                    <li>✅ 2K requests/day</li>
+                    <li>✅ 50K tokens/request</li>
+                    <li>✅ All agents</li>
+                    <li>✅ Custom agents</li>
+                    <li>✅ CI/CD integration</li>
+                </ul>
+                <a href="#" class="block text-center py-2 rounded-lg border border-purple-600 text-purple-600 hover:bg-purple-50 transition font-medium">Subscribe →</a>
+            </div>
+            <div class="bg-white rounded-xl p-6 shadow-md border-2 border-gray-100">
+                <h3 class="text-lg font-bold">Enterprise</h3>
+                <div class="text-3xl font-bold my-3">$199</div>
+                <p class="text-gray-500 text-sm mb-4">/month</p>
+                <ul class="text-sm space-y-2 mb-6">
+                    <li>✅ 10K requests/day</li>
+                    <li>✅ 500K tokens/request</li>
+                    <li>✅ All agents</li>
+                    <li>✅ Custom agents</li>
+                    <li>✅ CI/CD + priority support</li>
+                </ul>
+                <a href="#" class="block text-center py-2 rounded-lg border border-purple-600 text-purple-600 hover:bg-purple-50 transition font-medium">Contact →</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- API Example -->
+    <section id="docs" class="bg-gray-900 text-white py-20">
+        <div class="max-w-4xl mx-auto px-4">
+            <h2 class="text-3xl font-bold mb-8">One Line to Start</h2>
+            <div class="bg-gray-800 rounded-lg p-6 mb-6">
+<pre class="text-sm text-green-400"># Install the client
+pip install agentforge-client
+
+# Use it
+from agentforge import Agent
+
+agent = Agent(api_key="af_your_key")
+result = agent.execute("review this code", context=code)
+print(result)</pre>
+            </div>
+            <div class="bg-gray-800 rounded-lg p-6">
+<pre class="text-sm text-blue-300"># Or just use curl
+curl -X POST https://api.agentforge.dev/v1/agent/execute \
+  -H "Authorization: Bearer af_your_key" \
+  -H "Content-Type: application/json" \
+  -d '{
+    "task": "Generate unit tests for this function",
+    "context": "def add(a, b): return a + b",
+    "format": "markdown"
+  }'</pre>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="bg-gray-100 py-8 text-center text-gray-500 text-sm">
+        <p>© 2026 AgentForge. Built with ❤️ by independent developers.</p>
+    </footer>
+</body>
+</html>
